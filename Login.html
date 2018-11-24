@@ -34,16 +34,16 @@
     </div>
     <div class="col-sm">
       
-		<form>
+		<form id="loginup">
 		  <div class="form-group">
 		    <label for="exampleInputEmail1">Rut</label>
-		    <input class="form-control" type="text" placeholder="Ingrese rut">
+		    <input class="form-control" type="text" placeholder="Ingrese rut" id="rut" name="rut">
 		  </div>
 		  <div class="form-group">
 		    <label for="exampleInputPassword1">Password</label>
-		    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+		    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" id="password" name="password">
 		  </div>
-		  <button type="submit" class="btn btn-primary">Submit</button>
+		  <button type="submit" class="btn btn-primary">Ingresar</button>
 		</form>
 
     </div>
@@ -52,10 +52,63 @@
     </div>
   </div>
 </div>
-
-
-
-
-
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+<script>
+$( document ).ready(function() {
+   		$( "#loginup" ).submit(function( event ) {
+   			    var rut = $("#rut").val().toString();
+   			    rut = rut.replace(".","").replace(".","");
+  				if ( Fn.validaRut(rut))
+  				{
+  					alert("rut correcto");
+
+  				}
+  				else
+  				{
+  					alert("Rut invalido");
+  				}
+		}); 
+
+   		// formata en live
+		  document.getElementById('rut').addEventListener('input', function(evt) {
+		  let value = this.value.replace(/\./g, '').replace('-', '');
+		  
+		  if (value.match(/^(\d{2})(\d{3}){2}(\w{1})$/)) {
+		    value = value.replace(/^(\d{2})(\d{3})(\d{3})(\w{1})$/, '$1.$2.$3-$4');
+		  }
+		  else if (value.match(/^(\d)(\d{3}){2}(\w{0,1})$/)) {
+		    value = value.replace(/^(\d)(\d{3})(\d{3})(\w{0,1})$/, '$1.$2.$3-$4');
+		  }
+		  else if (value.match(/^(\d)(\d{3})(\d{0,2})$/)) {
+		    value = value.replace(/^(\d)(\d{3})(\d{0,2})$/, '$1.$2.$3');
+		  }
+		  else if (value.match(/^(\d)(\d{0,2})$/)) {
+		    value = value.replace(/^(\d)(\d{0,2})$/, '$1.$2');
+		  }
+		  this.value = value;
+		});
+
+		 // validaciones de rut
+		var Fn = {
+			// Valida el rut con su cadena completa "XXXXXXXX-X"
+			validaRut : function (rutCompleto) {
+				if (!/^[0-9]+[-|‐]{1}[0-9kK]{1}$/.test( rutCompleto ))
+					return false;
+				var tmp 	= rutCompleto.split('-');
+				var digv	= tmp[1]; 
+				var rut 	= tmp[0];
+				if ( digv == 'K' ) digv = 'k' ;
+				return (Fn.dv(rut) == digv );
+			},
+			dv : function(T){
+				var M=0,S=1;
+				for(;T;T=Math.floor(T/10))
+					S=(S+T%10*(9-M++%6))%11;
+				return S?S-1:'k';
+			},
+		}
+		
+});
+</script>
 </html>
